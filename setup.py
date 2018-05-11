@@ -1,9 +1,15 @@
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+requires = ["jsonasobj>=1.2.0"]
 
 setup(
     name='cachejar',
-    version='0.1.0',
+    version="0.2.0",
     packages=['cachejar'],
+    install_requires=requires,
     url='http://github.com/hsolbrig/cachejar',
     license='Apache License 2.0',
     author='Harold Solbrig',

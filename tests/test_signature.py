@@ -29,6 +29,7 @@ import os
 import unittest
 
 import time
+import urllib.error
 
 from cachejar.signature import signature
 
@@ -49,8 +50,10 @@ class SignatureTestCase(unittest.TestCase):
         sig2 = signature(self.url2)
         self.assertIsNotNone(sig2)
         self.assertNotEqual(sig, sig2)
-        self.assertIsNone(signature(self.url + 'z'))
-        self.assertIsNone(signature(self.file))
+        with self.assertRaises(urllib.error.HTTPError):
+            signature(self.url + 'z')
+        with self.assertRaises(FileNotFoundError):
+            signature(self.file)
         with open(self.file, 'w') as f:
             f.write("test")
         sig = signature(self.file)

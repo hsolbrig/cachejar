@@ -9,26 +9,20 @@ from typing import Optional
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def signature(name_or_url: str) -> Optional[str]:
+def signature(name_or_url: str) -> str:
     """ Get a size / modification signature from a file or URL
 
     :param name_or_url: file name or url
-    :return: Signature or None if unable to locate it
+    :return: Signature
     """
-    def file_signature() -> Optional[str]:
-        try:
-            st = os.stat(name_or_url)
-        except FileNotFoundError:
-            return None
+    def file_signature() -> str:
+        st = os.stat(name_or_url)
         return str((stat.S_IFMT(st.st_mode), st.st_size, st.st_mtime))
 
-    def url_signature() -> Optional[str]:
+    def url_signature() -> str:
         request = urllib.request.Request(name_or_url)
         request.get_method = lambda: 'HEAD'
-        try:
-            response = urllib.request.urlopen(request)
-        except urllib.error.HTTPError:
-            return None
+        response = urllib.request.urlopen(request)
         return str((response.info()['Last-Modified'], response.info()['Content-Length'], response.info().get('ETag')))
 
-    return None if not isinstance(name_or_url, str) else url_signature() if '://' in name_or_url else file_signature()
+    return url_signature() if '://' in name_or_url else file_signature()
