@@ -32,6 +32,7 @@ import time
 import urllib.error
 
 from cachejar.signature import signature
+from tests.utils.make_and_clear_directory import make_and_clear_directory
 
 
 class SignatureTestCase(unittest.TestCase):
@@ -39,7 +40,9 @@ class SignatureTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.url = "http://hl7.org/fhir/w5.ttl"
         cls.url2 = "http://hl7.org/fhir/fhir.ttl"
-        cls.file = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data', 'sig_file'))
+        cls.datadir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
+        cls.file = os.path.join(cls.datadir, 'sig_file')
+        cls.dirdir = os.path.join(cls.datadir, 'directory')
 
     def test_sigs(self):
         if os.path.exists(self.file):
@@ -64,7 +67,6 @@ class SignatureTestCase(unittest.TestCase):
         sig2 = signature(self.file)
         self.assertNotEqual(sig, sig2)
         os.remove(self.file)
-
 
 if __name__ == '__main__':
     unittest.main()

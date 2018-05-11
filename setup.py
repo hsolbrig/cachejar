@@ -7,7 +7,7 @@ requires = ["jsonasobj>=1.2.0"]
 
 setup(
     name='cachejar',
-    version="0.2.0",
+    version="0.3.0",
     packages=['cachejar'],
     install_requires=requires,
     url='http://github.com/hsolbrig/cachejar',
