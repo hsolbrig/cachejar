@@ -3,7 +3,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-requires = ["jsonasobj>=1.2.0"]
+requires = ["jsonasobj>=1.2.1"]
 
 setup(
     name='cachejar',

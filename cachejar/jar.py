@@ -6,7 +6,7 @@ import uuid
 from typing import Optional, Dict, Any
 
 import jsonasobj
-from jsonasobj.jsonobj import as_json
+from jsonasobj.jsonobj import as_json, items
 
 from cachejar.signature import signature
 
@@ -96,7 +96,7 @@ class CacheJar:
         """
         if self.disabled:
             return False
-        obj_identity = obj_identity = self._identity(obj_id, *parms, **kwparms)
+        obj_identity = self._identity(obj_id, *parms, **kwparms)
         sig = signature(name_or_url)
         if name_or_url not in self._cache:
             self._cache[name_or_url] = CacheIndex.CacheEntry(sig)
@@ -121,7 +121,7 @@ class CacheJar:
         :param update_index: False means we'll catch the update later on
         """
         cache_entry = self._cache[name_or_url]
-        for _, fname in cache_entry.cached_objects._items():
+        for _, fname in items(cache_entry.cached_objects):
             fpath = os.path.join(self.cache_directory, fname)
             if os.path.exists(fpath):
                 os.remove(fpath)
@@ -142,10 +142,10 @@ class CacheJar:
         :return: number of entries removed
         """
         nremoved = 0
-        obj_identity = obj_identity = self._identity(obj_id, *parms, **kwparms) if obj_id is not None else None
-        for ename_or_url, cache_entry in list(self._cache._items()):        # Lists to prevent dynamic update
+        obj_identity = self._identity(obj_id, *parms, **kwparms) if obj_id is not None else None
+        for ename_or_url, cache_entry in list(items(self._cache)):        # Lists to prevent dynamic update
             if name_or_url is None or ename_or_url == name_or_url:
-                for cached_obj_id, fname in list(cache_entry.cached_objects._items()):
+                for cached_obj_id, fname in list(items(cache_entry.cached_objects)):
                     if obj_identity is None or obj_identity == cached_obj_id:
                         fpath = os.path.join(self.cache_directory, fname)
                         if os.path.exists(fpath):
